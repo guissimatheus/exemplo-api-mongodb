@@ -21,3 +21,22 @@ exports.update = function (req, res) {
 exports.delete = function (req, res) {
     res.send({type: 'DELETE'});
 }
+
+// Criar no BD
+// exports.create = function(req, res) {
+//     console.log("POST request:", req.body);
+//     res.send({
+//         type: 'POST',
+//         name: req.body.name,
+//         rank: req.body.rank
+//     });
+// }
+
+const PI = require('../models/PImodel');
+
+exports.create = function(req, res) {
+    console.log("POST request:", req.body);
+    PI.create(req.body).then(function(pi) {
+        res.send(pi);
+    });
+}
