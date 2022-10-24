@@ -7,36 +7,39 @@ exports.details = function (req, res) {
     res.send({type: 'GET'});
 }
 
-// Adicionar no BD
-exports.add = function (req, res) {
-    res.send({type: 'POST'});
-}
-
-// Alterar no BD
-exports.update = function (req, res) {
-    res.send({type: 'PUT'});
-}
-
-// Deletar no BD
-exports.delete = function (req, res) {
-    res.send({type: 'DELETE'});
-}
-
-// Criar no BD
-// exports.create = function(req, res) {
-//     console.log("POST request:", req.body);
-//     res.send({
-//         type: 'POST',
-//         name: req.body.name,
-//         rank: req.body.rank
-//     });
-// }
-
 const PI = require('../models/PImodel');
 
-exports.create = function(req, res) {
+// Cria registro no banco
+exports.create = function(req, res, next) {
     console.log("POST request:", req.body);
-    PI.create(req.body).then(function(pi) {
-        res.send(pi);
-    });
+    PI.create(req.body)
+        .then(function(pi) {
+            res.send(pi);
+        })
+        .catch(next);
+}
+
+// Deleta registro no banco
+exports.delete = function(req, res, next) {
+    // Pesquisar diferença entre Remove e Delete
+    console.log("DELETE request - ID:", req.params.id);
+    PI.findByIdAndRemove({ _id: req.params.id })
+        .then(function(pi) {
+            res.send(pi);
+        })
+        .catch(next);
+}
+
+// Atualiza registro no banco
+exports.update = function(req, res, next) {
+    console.log("UPDATE request:", req.body);
+    PI.findByIdAndUpdate({ _id: req.params.id }, req.body)
+        .then(function() {
+            // Ver findById
+            PI.findOne({ _id: req.params.id })
+                .then(function(pi) {
+                    res.send(pi);
+                });
+        })
+        .catch(next);
 }
