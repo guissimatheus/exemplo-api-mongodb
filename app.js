@@ -15,6 +15,13 @@ mongoose.connection.on('error', function(err) {
 
 const app = express();
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extends: true }));
+
+// Configuração da View Engine
+app.set("view engine", 'ejs');
+
+// Define uso dos arquivos da pasta public
+app.use(express.static(__dirname + '/public'));
 
 // Error connect
 app.use(function(err, req, res, next) {

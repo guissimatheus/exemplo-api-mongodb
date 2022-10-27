@@ -1,20 +1,35 @@
-exports.test = function (req, res) {
-    res.send("Hello World! Teste ao Controller...");
-}
+const PI = require('../models/PImodel');
 
 // Listar os detalhes do BD
 exports.details = function (req, res) {
-    res.send({type: 'GET'});
+    PI.find({}).then(function(pi) {
+        res.send(pi);
+    });
 }
-
-const PI = require('../models/PImodel');
 
 // Cria registro no banco
 exports.create = function(req, res, next) {
     console.log("POST request:", req.body);
-    PI.create(req.body)
+    let name = req.body.name;
+    let dt = req.body.details;
+    let lat = req.body.lat;
+    let lng = req.body.lng;
+
+    let data = {
+        name: name,
+        details: dt,
+        status: true,
+        geometry: {
+            "type": "point",
+            "coordinates": [lat, lng]
+        }
+    }
+
+    PI.create(data)
         .then(function(pi) {
-            res.send(pi);
+            res.send("Documento criado com sucesso!");
+            console.log("Documento criado com sucesso!");
+            console.log(pi);
         })
         .catch(next);
 }
@@ -42,4 +57,9 @@ exports.update = function(req, res, next) {
                 });
         })
         .catch(next);
+}
+
+exports.test = function (req, res) {
+    // res.send("Hello World! Teste ao Controller...");
+    res.render('createPI');
 }
